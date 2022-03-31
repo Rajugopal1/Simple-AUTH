@@ -17,6 +17,7 @@ module.exports = {
             .withMessage('password is not provide')
             .run(req)
 
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).send(errors);
         const { userName, password } = req.body;

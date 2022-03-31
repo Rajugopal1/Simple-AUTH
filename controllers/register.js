@@ -50,6 +50,7 @@ module.exports = {
                 qualification: registerUser.qualification,
                 city: registerUser.city,
                 phoneNumber: registerUser.phoneNumber,
+                role: registerUser.role
             })
         } catch (error) {
             res.status(400).send(`The user is not register because of this error ${error}`)
@@ -57,7 +58,7 @@ module.exports = {
     },
     async getAllUser(req, res) {
         try {
-    
+            const role = req.user.role;
             const user = await User.find()
             if (!user) return res.status(404).send('Not exist');
             res.send(user)
@@ -67,7 +68,7 @@ module.exports = {
     },
     async getUser(req, res) {
         try {
-    
+            console.log(req.user)
             const id = req.params.id;
             const user = await User.findById(id)
             if (!user) return res.status(404).send('Not exist');

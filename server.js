@@ -4,10 +4,14 @@ const session = require('express-session');
 const JWT = require("jsonwebtoken");
 const mongoose= require("mongoose");
 const multer  = require('multer')
+
 // const upload = multer({ dest: 'uploads/' })
 const app= express();
+const http = require('http').Server(app)
+const io = require('socket.io')(http);
 
 const error = require('./middlewares/error')
+const Message = require('./models/chatModel')
 // const registerController = require('./controllers/register');
 // const login = require("./controllers/login");
 // const homeController = require("./controllers/home")
@@ -15,7 +19,21 @@ const error = require('./middlewares/error')
 // const { userAuth, isLogin } = require('./middlewares/auth');
 
 
+app.post('/messages', (req, res) => {
+    
+    
+    try{
+        const message = req.body
+        console.log(message)
+         Message.create(message);
+        io.emit('message', message);
+       return res.sendStatus(200);
 
+    }
+    catch(err) {
+        return res.send({message:err.message})
+    }
+  })
 
 
 app.use(bodyParser.json())
@@ -28,7 +46,9 @@ app.use(bodyParser.urlencoded(
 
 require('./routes/routes')(app);
 
-
+io.on('connection', () =>{
+    console.log('a user is connected')
+  })
 
 app.listen((5000), () => {
     console.log("Listening on port 5000")
