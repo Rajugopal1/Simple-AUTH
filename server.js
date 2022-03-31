@@ -24,7 +24,7 @@ app.post('/messages', (req, res) => {
     
     try{
         const message = req.body
-        console.log(message)
+        console.log(message);
          Message.create(message);
         io.emit('message', message);
        return res.sendStatus(200);
@@ -33,6 +33,12 @@ app.post('/messages', (req, res) => {
     catch(err) {
         return res.send({message:err.message})
     }
+  })
+
+  app.get('/messages', (req, res) => {
+    Message.find({},(err, messages)=> {
+      res.send(messages);
+    })
   })
 
 
