@@ -13,7 +13,7 @@ module.exports = (app) => {
 app.post('/auth-service/login', login.userLogin);
 app.post('/auth-service/registration', registerController.createUser);
 app.get('/auth-service/profiles',[userAuth, isLogin], registerController.getAllUser,);
-app.get('/auth-service/profile/:id', [userAuth, isLogin,paramsId,], registerController.getUser);
+app.get('/auth-service/profile', [userAuth, isLogin,], registerController.getUser);
 
 
 app.use(error);

@@ -11,6 +11,15 @@ const validationInput = async (req) => {
         .trim()
         .isLength({ min: 3, max: 20 })
         .withMessage('qualification should be 3 to 20 characters').run(req);
+    await check('emailId')
+        .trim()
+        .isEmail()
+        .withMessage("email is not valid")
+        .custom(async emailId => {
+            const registerUser = await User.findOne({ emailId});
+            if (registerUser) throw new Error('emailId is already register');
+        })
+        .run(req);
     await check('userName')
         .trim()
         .isLength({ min: 3, max: 20 })
@@ -45,6 +54,7 @@ module.exports = {
             registerUser = await User.create(registerUser)
             return res.send({
                 _id: registerUser._id,
+                emailId: registerUser.emailId,
                 userName: registerUser.userName,
                 password: registerUser.password,
                 qualification: registerUser.qualification,
@@ -69,7 +79,7 @@ module.exports = {
     async getUser(req, res) {
         try {
             console.log(req.user)
-            const id = req.params.id;
+            const id = req.user._id;
             const user = await User.findById(id)
             if (!user) return res.status(404).send('Not exist');
             res.send(user)

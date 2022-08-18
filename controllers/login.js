@@ -8,9 +8,10 @@ const User = require("../models/userModel");
 
 module.exports = {
     async userLogin(req, res) {
-        await check('userName')
+        await check('emailId')
             .notEmpty()
-            .withMessage('userName is not provide')
+            .isEmail()
+            .withMessage('email is not provide')
             .run(req);
         await check('password')
             .notEmpty()
@@ -20,11 +21,11 @@ module.exports = {
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).send(errors);
-        const { userName, password } = req.body;
-        const user = await User.findOne({ userName })
-        if (!user) return res.status(401).send('Invalid userName or password')
+        const { emailId, password } = req.body;
+        const user = await User.findOne({ emailId});
+        if (!user) return res.status(401).send('Invalid  email');
         const isAuthUser = await User.passwordCompare(password, user.password)
-        if (!isAuthUser) return res.status(401).send('Invalid userName or password')
+        if (!isAuthUser) return res.status(401).send('Invalid crendentials')
         const token = await user.generateAuthToken()
         res.send({ user: user , token:  token})
     },
