@@ -28,18 +28,4 @@ module.exports = {
         const token = await user.generateAuthToken()
         res.send({ user: user , token:  token})
     },
-    async userLogout(req, res) {
-        let sess = req.user;
-        
-            try {
-                let token =  req.header("Authorization");
-                sess = null;
-             await new Promise( jwtr.destroy(token))
-            return res.send({'success': true, "message": "user logout successfully"});
-            }
-            catch (error) {
-                return res.status(400).send({message: error.message})
-            }
-            
-    }
 }
